@@ -21,7 +21,6 @@ with urllib.request.urlopen(req) as response:
 
 soup = BeautifulSoup(website, "html.parser")
 
-# ---- LIMIT TO ARTICLE BODY ONLY ----
 container = soup.select_one(".ArticleBase-BodyContent")
 if not container:
     raise ValueError("Article body not found")
@@ -81,5 +80,3 @@ articles = parse_articles(elements)
 
 filename = f"{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.md"
 save_markdown(filename, articles)
-
-print(f"Saved to {filename}")
