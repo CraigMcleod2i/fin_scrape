@@ -4,16 +4,28 @@ from datetime import datetime
 
 url = "https://www.fintechfutures.com/fintech/fintech-futures-top-five-news-stories-of-the-week-20-february-2026"
 
+# More complete browser fingerprint
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
     "Accept-Language": "en-GB,en;q=0.9",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Referer": "https://www.google.com/"
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "https://www.google.com/",
 }
 
-response = requests.get(url, headers=headers, timeout=15)
-response.raise_for_status()  # raises an exception for non-200 responses
+# Use a session to maintain cookies
+session = requests.Session()
+session.headers.update(headers)
+
+# Optional: hit homepage first to get cookies (helps bypass some protections)
+session.get("https://www.fintechfutures.com/", timeout=15)
+
+# Now request the article
+response = session.get(url, timeout=15)
+response.raise_for_status()
 
 soup = BeautifulSoup(response.text, "html.parser")
 
