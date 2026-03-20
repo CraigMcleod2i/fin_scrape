@@ -1,8 +1,7 @@
-from datetime import datetime
+import requests
 from bs4 import BeautifulSoup
-import urllib.request
+from datetime import datetime
 
-# ---- CONFIG ----
 url = "https://www.fintechfutures.com/fintech/fintech-futures-top-five-news-stories-of-the-week-20-february-2026"
 
 headers = {
@@ -14,12 +13,10 @@ headers = {
     "Referer": "https://www.google.com/"
 }
 
-req = urllib.request.Request(url, headers=headers)
+response = requests.get(url, headers=headers, timeout=15)
+response.raise_for_status()  # raises an exception for non-200 responses
 
-with urllib.request.urlopen(req) as response:
-    website = response.read()
-
-soup = BeautifulSoup(website, "html.parser")
+soup = BeautifulSoup(response.text, "html.parser")
 
 container = soup.select_one(".ArticleBase-BodyContent")
 if not container:
