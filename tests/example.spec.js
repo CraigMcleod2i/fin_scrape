@@ -3,9 +3,27 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 
 test('scrape fintech futures article and save markdown', async ({ browser }) => {
-  const url = "https://www.fintechfutures.com/fintech/fintech-futures-top-five-news-stories-of-the-week-20-february-2026";
 
-  // const fintechBase = "https://www.fintechfutures.com"
+
+  const buildLastTopFiveURL = () => {
+    const now = new Date();
+    const day = now.getDay(); // 0 (Sun) → 6 (Sat)
+    const diff = (day >= 5) ? day - 5 : day + 2
+    const prevMonday = new Date(now);
+    prevMonday.setDate(now.getDate() - diff);
+    
+    const weekday = prevMonday.getDate();
+    const month = prevMonday.toLocaleString('en-GB', { month: 'long' }).toLowerCase();
+    const year = prevMonday.getFullYear();
+
+    const formatted = `${weekday}-${month}-${year}`;
+
+   return "https://www.fintechfutures.com/fintech/fintech-futures-top-five-news-stories-of-the-week-" + formatted
+
+  }
+  
+
+  const url = buildLastTopFiveURL()
 
   const context = await browser.newContext({
     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
